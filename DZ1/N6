@@ -1,0 +1,51 @@
+ЗАДАЧА______________________________________________________________________________________________
+Сортировка температур за неделю Дан список температур за 7 дней [22, 18, 25, 20, 23, 19, 21]. Реализуйте функцию quicksort_temps(temps) для сортировки температур по убыванию с использованием быстрой сортировки. 
+Требования: Измените логику сравнения, чтобы сортировка шла от большего к меньшему.
+Проверьте на: 
+Ожидаемый результат: [25, 23, 22, 21, 20, 19, 18].
+РЕШЕНИЕ______________________________________________________________________________________________
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<int> temps = new List<int> { 22, 18, 25, 20, 23, 19, 21 };
+        List<int> sortedTemps = QuicksortTemps(temps);
+        Console.WriteLine(string.Join(", ", sortedTemps));
+        // Ожидаемый результат: 25, 23, 22, 21, 20, 19, 18
+    }
+
+    static List<int> QuicksortTemps(List<int> temps)
+    {
+        if (temps.Count <= 1)
+            return temps;
+
+        // Выбираем опорный элемент (например, первый)
+        int pivot = temps[0];
+
+        var greater = new List<int>();
+        var lessOrEqual = new List<int>();
+
+        for (int i = 1; i < temps.Count; i++)
+        {
+            // Для сортировки по убыванию сравниваем с "больше или равно"
+            if (temps[i] >= pivot)
+                greater.Add(temps[i]);
+            else
+                lessOrEqual.Add(temps[i]);
+        }
+
+        var sortedGreater = QuicksortTemps(greater);
+        var sortedLessOrEqual = QuicksortTemps(lessOrEqual);
+
+        // Объединяем результат: от большего к меньшему
+        var result = new List<int>();
+        result.AddRange(sortedGreater);
+        result.Add(pivot);
+        result.AddRange(sortedLessOrEqual);
+
+        return result;
+    }
+}
