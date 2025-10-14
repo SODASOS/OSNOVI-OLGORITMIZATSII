@@ -1,0 +1,96 @@
+ЗАДАНИЕ_________________________________________________________________________________________
+Оптимизация быстрой сортировки Модифицируйте функцию quicksort из задачи 3, выбрав случайный элемент в качестве опорного, чтобы улучшить производительность на уже отсортированных массивах. 
+Протестируйте на массиве [1, 2, 3, 4, 5] и сравните время выполнения (если возможно) с предыдущей версией.
+РЕШЕНИЕ_________________________________________________________________________________________
+using System;
+using System.Diagnostics;
+
+class Program
+{
+    static Random rand = new Random();
+
+    static void Main()
+    {
+        int[] arrayOrdered = { 1, 2, 3, 4, 5 };
+        int[] arrayRandom = { 10, 7, 8, 1, 5 }; // для предыдущей версии
+
+        // Тестирование с уже отсортированным массивом
+        Console.WriteLine("Исходный отсортированный массив: " + string.Join(", ", arrayOrdered));
+        Console.WriteLine("Результат сортировки (с рандомным опорным): " + string.Join(", ", QuickSortRandomPivot((int[])arrayOrdered.Clone())));
+
+        // Время выполнения
+        var stopwatch = new Stopwatch();
+
+        // Замеры для случайного опорного элемента
+        stopwatch.Start();
+        QuickSortRandomPivot((int[])arrayOrdered.Clone());
+        stopwatch.Stop();
+        Console.WriteLine($"Время сортировки с рандомным опорным: {stopwatch.ElapsedTicks} тактов");
+
+        // Замеры для предыдущей версии с первым элементом как опорным
+        stopwatch.Restart();
+        QuickSortFirstPivot((int[])arrayOrdered.Clone());
+        stopwatch.Stop();
+        Console.WriteLine($"Время сортировки с первым элементом как опорным: {stopwatch.ElapsedTicks} тактов");
+    }
+
+    static int[] QuickSortFirstPivot(int[] arr)
+    {
+        if (arr.Length <= 1)
+            return arr;
+
+        int pivot = arr[0];
+        var less = new System.Collections.Generic.List<int>();
+        var greater = new System.Collections.Generic.List<int>();
+
+        for (int i = 1; i < arr.Length; i++)
+        {
+            if (arr[i] <= pivot)
+                less.Add(arr[i]);
+            else
+                greater.Add(arr[i]);
+        }
+
+        int[] sortedLess = QuickSortFirstPivot(less.ToArray());
+        int[] sortedGreater = QuickSortFirstPivot(greater.ToArray());
+
+        int[] result = new int[sortedLess.Length + 1 + sortedGreater.Length];
+        Array.Copy(sortedLess, 0, result, 0, sortedLess.Length);
+        result[sortedLess.Length] = pivot;
+        Array.Copy(sortedGreater, 0, result, sortedLess.Length + 1, sortedGreater.Length);
+
+        return result;
+    }
+
+    static int[] QuickSortRandomPivot(int[] arr)
+    {
+        if (arr.Length <= 1)
+            return arr;
+
+        // Выбираем случайный индекс для опорного элемента
+        int pivotIndex = rand.Next(arr.Length);
+        int pivot = arr[pivotIndex];
+
+        var less = new System.Collections.Generic.List<int>();
+        var greater = new System.Collections.Generic.List<int>();
+
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (i == pivotIndex) continue; // пропускаем опорный
+            if (arr[i] <= pivot)
+                less.Add(arr[i]);
+            else
+                greater.Add(arr[i]);
+        }
+
+        int[] sortedLess = QuickSortRandomPivot(less.ToArray());
+        int[] sortedGreater = QuickSortRandomPivot(greater.ToArray());
+
+        int[] result = new int[sortedLess.Length + 1 + sortedGreater.Length];
+        Array.Copy(sortedLess, 0, result, 0, sortedLess.Length);
+        result[sortedLess.Length] = pivot;
+        Array.Copy(sortedGreater, 0, result, sortedLess.Length + 1, sortedGreater.Length);
+
+        return result;
+    }
+}
