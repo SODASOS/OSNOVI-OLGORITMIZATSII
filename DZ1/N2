@@ -1,0 +1,52 @@
+ЗАДАНИЕ____________________________________________________________________________________________
+Рекурсивный поиск ключа Реализуйте рекурсивную функцию find_key(boxes), которая ищет ключ в списке коробок. Каждая коробка может содержать либо ключ, либо вложенные коробки. 
+Пример структуры: [["box1", ["box2", "key"]], "box3"].
+Функция должна возвращать "Ключ найден!" при успехе или "Ключ не найден" при неудаче.
+Протестируйте на примере: [["box1", ["box2", "key"]], ["box3", "box4"]] и [["box1", "box2"], "box3"].
+РЕШЕНИЕ____________________________________________________________________________________________
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        // Пример структуры 1
+        var boxes1 = new List<object>
+        {
+            new List<object> { "box1", new List<object> { "box2", "key" } },
+            new List<object> { "box3", "box4" }
+        };
+
+        // Пример структуры 2
+        var boxes2 = new List<object>
+        {
+            new List<object> { "box1", "box2" },
+            "box3"
+        };
+
+        Console.WriteLine(FindKey(boxes1)); // Ожидает "Ключ найден!"
+        Console.WriteLine(FindKey(boxes2)); // Ожидает "Ключ не найден"
+    }
+
+    static string FindKey(object boxes)
+    {
+        if (boxes is string str)
+        {
+            if (str == "key")
+                return "Ключ найден!";
+            else
+                return "Ключ не найден";
+        }
+        else if (boxes is List<object> list)
+        {
+            foreach (var item in list)
+            {
+                var result = FindKey(item);
+                if (result == "Ключ найден!")
+                    return result;
+            }
+        }
+        return "Ключ не найден";
+    }
+}
