@@ -1,0 +1,51 @@
+ЗАДАНИЕ_________________________________________________________________________________________
+Сортировка имен по длине Дан список имен ["Anna", "Bob", "Charlie", "Eve"]. Напишите функцию quicksort_names(names), которая сортирует список по длине строк с помощью быстрой сортировки. 
+Требования: Сравнивайте длину строк (len(name)) как ключ сортировки.
+Проверьте на: 
+Ожидаемый результат: ["Bob", "Eve", "Anna", "Charlie"] (длины: 3, 3, 4, 7).
+РЕШЕНИЕ_________________________________________________________________________________________
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string> names = new List<string> { "Anna", "Bob", "Charlie", "Eve" };
+        List<string> sortedNames = QuicksortNames(names);
+        Console.WriteLine(string.Join(", ", sortedNames));
+        // Ожидаемый результат: Bob, Eve, Anna, Charlie
+    }
+
+    static List<string> QuicksortNames(List<string> names)
+    {
+        if (names.Count <= 1)
+            return names;
+
+        // Выбираем опорный элемент (например, первый)
+        string pivot = names[0];
+        int pivotLength = pivot.Length;
+
+        var less = new List<string>();
+        var greaterOrEqual = new List<string>();
+
+        for (int i = 1; i < names.Count; i++)
+        {
+            if (names[i].Length <= pivotLength)
+                less.Add(names[i]);
+            else
+                greaterOrEqual.Add(names[i]);
+        }
+
+        var sortedLess = QuicksortNames(less);
+        var sortedGreaterOrEqual = QuicksortNames(greaterOrEqual);
+
+        // Объединяем результат
+        var result = new List<string>();
+        result.AddRange(sortedLess);
+        result.Add(pivot);
+        result.AddRange(sortedGreaterOrEqual);
+
+        return result;
+    }
+}
