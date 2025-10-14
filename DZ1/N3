@@ -1,0 +1,45 @@
+ЗАДАНИЕ_________________________________________________________________________________________
+Быстрая сортировка Реализуйте алгоритм быстрой сортировки quicksort(arr) для массива чисел. 
+Используйте первый элемент как опорный (pivot).
+Требования: Функция должна возвращать отсортированный массив.
+Протестируйте на массиве [10, 7, 8, 1, 5] и выведите результат.
+РЕШЕНИЕ____________________________________________________________________________________________
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int[] array = { 10, 7, 8, 1, 5 };
+        int[] sortedArray = QuickSort(array);
+        Console.WriteLine(string.Join(", ", sortedArray));
+    }
+
+    static int[] QuickSort(int[] arr)
+    {
+        if (arr.Length <= 1)
+            return arr;
+
+        int pivot = arr[0];
+        var less = new System.Collections.Generic.List<int>();
+        var greater = new System.Collections.Generic.List<int>();
+
+        for (int i = 1; i < arr.Length; i++)
+        {
+            if (arr[i] <= pivot)
+                less.Add(arr[i]);
+            else
+                greater.Add(arr[i]);
+        }
+
+        int[] sortedLess = QuickSort(less.ToArray());
+        int[] sortedGreater = QuickSort(greater.ToArray());
+
+        int[] result = new int[sortedLess.Length + 1 + sortedGreater.Length];
+        Array.Copy(sortedLess, 0, result, 0, sortedLess.Length);
+        result[sortedLess.Length] = pivot;
+        Array.Copy(sortedGreater, 0, result, sortedLess.Length + 1, sortedGreater.Length);
+
+        return result;
+    }
+}
