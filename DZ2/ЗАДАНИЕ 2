@@ -1,0 +1,29 @@
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        int n = int.Parse(Console.ReadLine());
+        int[] array = Console.ReadLine().Split().Select(int.Parse).ToArray();
+
+        int sumPositive = array.Where(x => x > 0).Sum();
+
+        int minVal = array.Min();
+        int maxVal = array.Max();
+        int minIdx = Array.IndexOf(array, minVal);
+        int maxIdx = Array.IndexOf(array, maxVal);
+
+        int start = Math.Min(minIdx, maxIdx) + 1;
+        int end = Math.Max(minIdx, maxIdx);
+
+        int product = 1;
+        for (int i = start; i < end; i++)
+        {
+            product *= array[i];
+        }
+
+        Console.WriteLine($"{sumPositive} {product}");
+    }
+}
