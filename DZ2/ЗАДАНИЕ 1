@@ -1,0 +1,34 @@
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        int n = int.Parse(Console.ReadLine());
+        int[] sequence = Console.ReadLine().Split().Select(int.Parse).ToArray();
+
+        int result = n; // максимальный возможный размер - вся последовательность
+        for (int i = 1; i <= n; i++)
+        {
+            if (n % i == 0)
+            {
+                bool isPeriod = true;
+                for (int j = 0; j < n; j++)
+                {
+                    if (sequence[j] != sequence[j % i])
+                    {
+                        isPeriod = false;
+                        break;
+                    }
+                }
+                if (isPeriod)
+                {
+                    result = i;
+                    break;
+                }
+            }
+        }
+        Console.WriteLine(result);
+    }
+}
