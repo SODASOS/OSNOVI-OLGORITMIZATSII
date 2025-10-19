@@ -1,0 +1,29 @@
+using System;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        int n = int.Parse(Console.ReadLine());
+        int[] arr = Console.ReadLine().Split().Select(int.Parse).ToArray();
+
+        var oddIndices = arr.Where((x, i) => (i + 1) % 2 != 0).OrderBy(x => x).ToArray();
+        var evenIndices = arr.Where((x, i) => (i + 1) % 2 == 0).OrderByDescending(x => x).ToArray();
+
+        int oddIdx = 0, evenIdx = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if ((i + 1) % 2 != 0)
+            {
+                arr[i] = oddIndices[oddIdx++];
+            }
+            else
+            {
+                arr[i] = evenIndices[evenIdx++];
+            }
+        }
+
+        Console.WriteLine(string.Join(" ", arr));
+    }
+}
