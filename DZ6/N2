@@ -1,0 +1,49 @@
+Задача 2. Факториал с утверждениями
+Напишите функцию factorial(n), вычисляющую факториал числа n. Используйте assert для проверки: n должно быть целым и неотрицательным (иначе AssertionError). Если n > 10, возбудите ValueError ("Слишком большое число!"). Обработайте в основном коде и выведите сообщение.
+Пример вывода:
+factorial(5) = 120
+factorial(-1) → AssertionError: n должно быть неотрицательным!
+/////////////////////////////////////////////////////////////////////////////////////////////////
+using System;
+using System.Diagnostics;
+
+class Program
+{
+    static void Main()
+    {
+        try
+        {
+            Console.WriteLine($"factorial(5) = {Factorial(5)}");
+            Console.WriteLine($"factorial(-1) = {Factorial(-1)}");
+            Console.WriteLine($"factorial(15) = {Factorial(15)}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    static long Factorial(int n)
+    {
+        // Проверка, что n целое и неотрицательное
+        Debug.Assert(n >= 0, "n должно быть неотрицательным!");
+
+        if (n < 0)
+        {
+            throw new ArgumentException("n должно быть неотрицательным!");
+        }
+
+        // Проверка, что n не слишком большое
+        if (n > 10)
+        {
+            throw new ArgumentException("Слишком большое число!");
+        }
+
+        long result = 1;
+        for (int i = 2; i <= n; i++)
+        {
+            result *= i;
+        }
+        return result;
+    }
+}
