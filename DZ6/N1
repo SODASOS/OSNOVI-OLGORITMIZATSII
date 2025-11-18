@@ -1,0 +1,77 @@
+Задача 1. Калькулятор с обработкой ошибок 
+Напишите программу-калькулятор, которая запрашивает у пользователя два числа и операцию (+, -, *, /). Обработайте возможные ошибки: деление на ноль, неверный ввод (не числа), неизвестная операция. Используйте try-except и raise для возбуждения ValueError при неизвестной операции. Если всё успешно — выведите результат в блоке else.
+Пример вывода:
+Введите первое число: 10
+Введите второе число: 0
+Операция: /
+Ошибка: Деление на ноль!
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+using System;
+
+class Calculator
+{
+    static void Main()
+    {
+        try
+        {
+            Console.Write("Введите первое число: ");
+            string input1 = Console.ReadLine();
+            if (!double.TryParse(input1, out double num1))
+            {
+                throw new FormatException("Некорректный ввод первого числа");
+            }
+
+            Console.Write("Введите второе число: ");
+            string input2 = Console.ReadLine();
+            if (!double.TryParse(input2, out double num2))
+            {
+                throw new FormatException("Некорректный ввод второго числа");
+            }
+
+            Console.Write("Операция: ");
+            string operation = Console.ReadLine();
+
+            double result;
+
+            switch (operation)
+            {
+                case "+":
+                    result = num1 + num2;
+                    break;
+                case "-":
+                    result = num1 - num2;
+                    break;
+                case "*":
+                    result = num1 * num2;
+                    break;
+                case "/":
+                    if (num2 == 0)
+                    {
+                        throw new DivideByZeroException("Деление на ноль!");
+                    }
+                    result = num1 / num2;
+                    break;
+                default:
+                    throw new ArgumentException("Неизвестная операция");
+            }
+
+            Console.WriteLine($"Результат: {result}");
+        }
+        catch (DivideByZeroException ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
+        catch (FormatException ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Произошла неизвестная ошибка: {ex.Message}");
+        }
+    }
+}
