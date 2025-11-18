@@ -1,0 +1,151 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        // Исходные данные
+        var необходимые_экзамены = new Dictionary<string, int>
+        {
+            {"Информатика", 80},
+            {"Математика", 85},
+            {"Русский язык", 75}
+        };
+
+        Console.WriteLine(@"Для определения возможности поступления, необходима информация о Вас.
+
+Для ввода экзамена и баллов введите их через |: Химия | 40.
+Для завершения ввода нажмите Enter.
+");
+
+        var сданные_экзамены = new Dictionary<string, int>();
+
+        // Обработка ввода экзаменов
+        while (true)
+        {
+            string ввод = Console.ReadLine().Trim();
+            if (string.IsNullOrEmpty(ввод))
+                break;
+
+            try
+            {
+                var parts = ввод.Split('|');
+                if (parts.Length != 2)
+                {
+                    throw new FormatException("Некорректный формат ввода. Используйте: Предмет | Баллы");
+                }
+
+                string экзамен = parts[0].Trim();
+                string баллСтрока = parts[1].Trim();
+
+                int балл = int.Parse(баллСтрока);
+                если (балл < 0)
+                {
+                    throw new ArgumentOutOfRangeException("Баллы не могут быть отрицательными");
+                }
+
+                сданные_экзамены[экзамен] = балл;
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"Ошибка формата: {ex.Message}");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Неизвестная ошибка: {ex.Message}");
+            }
+        }
+
+        Console.WriteLine("Ваши экзамены:");
+        int номер = 1;
+        foreach (var kvp in сданные_экзамены)
+        {
+            Console.WriteLine($"{номер}) {kvp.Key} {kvp.Value}");
+            номер++;
+        }
+
+        bool ok = false;
+        try
+        {
+            foreach (var необходимый_экзамен in необходимые_экзамены)
+            {
+                if (!сданные_экзамены.ContainsKey(необходимый_экзамен.Key))
+                {
+                    throw new KeyNotFoundException($"Отсутствует экзамен: {необходимый_экзамен.Key}");
+                }
+
+                if (сданные_экзамены[необходимый_экзамен.Key] < необходимый_экзамен.Value)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                ok = true;
+            }
+        }
+        catch (KeyNotFoundException ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
+
+        Console.WriteLine(ok ? "Вы можете к нам поступить!" : "Увы...");
+
+        // Обработка списка ФИО
+        try
+        {
+            Console.Write("Введите кол-во человек: ");
+            int n = int.Parse(Console.ReadLine().Trim());
+
+            var middle_names = new Dictionary<string, int>();
+            for (int i = 0; i < n; i++)
+            {
+                Console.Write("Введите ФИО через пробел: ");
+                string[] fioParts = Console.ReadLine().Trim().Split();
+
+                if (fioParts.Length < 3)
+                {
+                    throw new FormatException("Некорректный формат ФИО");
+                }
+
+                string middle_name = fioParts[2];
+                if (!string.IsNullOrEmpty(middle_name))
+                {
+                    middle_names[middle_name] = middle_names.GetValueOrDefault(middle_name, 0) + 1;
+                }
+            }
+
+            if (middle_names.Count == 0)
+            {
+                Console.WriteLine("Отчества не найдено");
+            }
+            else
+            {
+                var maxEntry = ("", 0);
+                foreach (var kvp in middle_names)
+                {
+                    if (kvp.Value > maxEntry.Item2)
+                    {
+                        maxEntry = (kvp.Key, kvp.Value);
+                    }
+                }
+                Console.WriteLine(maxEntry.Item1);
+            }
+
+            Console.WriteLine("В расчет участвовало человек: " + n);
+        }
+        catch (FormatException ex)
+        {
+            Console.WriteLine($"Ошибка при вводе числа или ФИО: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+        }
+    }
+}
