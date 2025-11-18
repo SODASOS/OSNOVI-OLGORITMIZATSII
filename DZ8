@@ -1,0 +1,125 @@
+using System;
+
+class Human
+{
+    public static string default_name = "Человек";
+    public static int default_age = 30;
+
+    public string name;
+    public int age;
+    private double money;
+    private House house;
+
+    // Конструктор
+    public Human(string name = null, int? age = null)
+    {
+        this.name = name ?? default_name;
+        this.age = age ?? default_age;
+        this.money = 0;
+        this.house = null;
+    }
+
+    // Метод для вывода информации
+    public void info()
+    {
+        Console.WriteLine($"Имя: {name}");
+        Console.WriteLine($"Возраст: {age}");
+        Console.WriteLine($"Деньги: {money}");
+        Console.WriteLine($"Дом: {(house != null ? "есть" : "нет")}");
+    }
+
+    // Статический метод для вывода статической информации
+    public static void default_info()
+    {
+        Console.WriteLine($"Стандартное имя: {default_name}");
+        Console.WriteLine($"Стандартный возраст: {default_age}");
+    }
+
+    // Приватный метод для сделки покупки дома
+    private void make_deal(House house, double price)
+    {
+        if (money >= price)
+        {
+            money -= price;
+            this.house = house;
+            Console.WriteLine($"Покупка дома успешно завершена. Осталось денег: {money}");
+        }
+        else
+        {
+            Console.WriteLine("Недостаточно денег для покупки дома.");
+        }
+    }
+
+    // Метод для заработка денег
+    public void earn_money(double amount)
+    {
+        if (amount > 0)
+        {
+            money += amount;
+            Console.WriteLine($"Заработано {amount}. Текущий баланс: {money}");
+        }
+        else
+        {
+            Console.WriteLine("Некорректная сумма для заработка.");
+        }
+    }
+
+    // Метод для покупки дома
+    public void buy_house(House house, double discount)
+    {
+        double price = house.final_price(discount);
+        make_deal(house, price);
+    }
+}
+
+class House
+{
+    protected double _area;
+    protected double _price;
+
+    public House(double area, double price)
+    {
+        _area = area;
+        _price = price;
+    }
+
+    public virtual double final_price(double discount)
+    {
+        return _price * (1 - discount);
+    }
+}
+
+class SmallHouse : House
+{
+    public SmallHouse() : base(40, 10000) // например, цена 10000
+    {
+        _area = 40; // площадь 40 м2
+    }
+}
+
+// Тестирование
+class Program
+{
+    static void Main()
+    {
+        // Часть 4. Тесты
+        Human.default_info();
+
+        Human person = new Human();
+        Console.WriteLine("\nИнформация о человеке:");
+        person.info();
+
+        SmallHouse smallHouse = new SmallHouse();
+        Console.WriteLine("\nПробуем купить маленький дом без денег:");
+        person.buy_house(smallHouse, 0.1); // скидка 10%
+
+        Console.WriteLine("\nПополняем деньги:");
+        person.earn_money(15000);
+
+        Console.WriteLine("\nПовторная попытка покупки:");
+        person.buy_house(smallHouse, 0.1);
+
+        Console.WriteLine("\nОбновленная информация о человеке:");
+        person.info();
+    }
+}
