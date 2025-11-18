@@ -1,0 +1,70 @@
+Задача по переборному алгоритму (поиск в глубину):
+Дан лабиринт 4x4 (матрица, где 0 — проход, 1 — стена):
+[[0, 1, 0, 0],
+[0, 0, 1, 0],
+[1, 0, 0, 0],
+[0, 1, 0, 0]].
+Плот размером 1x1 стартует в левом верхнем углу (0,0) и должен дойти до правого нижнего (3,3). Найдите, существует ли путь и его минимальную длину (количество шагов). Реализуйте backtracking и выведите путь (индексы клеток) или сообщение "Нет пути" выведите каждую итерацию решения. Модифицируйте код, чтобы учесть плот 2x2 (проверьте, возможен ли путь).
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static int[,] maze = {
+        {0, 1, 0, 0},
+        {0, 0, 1, 0},
+        {1, 0, 0, 0},
+        {0, 1, 0, 0}
+    };
+    static int rows = 4, cols = 4;
+    static bool[,] visited = new bool[4,4];
+    static List<(int, int)> path = new List<(int, int)>();
+    static List<(int, int)> bestPath = new List<(int, int)>();
+    static int minLen = int.MaxValue;
+
+    static void Main()
+    {
+        Search(0,0,0);
+        Console.WriteLine(bestPath.Count < int.MaxValue ? $"Путь длиной {bestPath.Count}:" : "Нет пути");
+        if (bestPath.Count < int.MaxValue)
+            foreach (var c in bestPath) Console.Write($"({c.Item1},{c.Item2}) ");
+
+        // Для 2x2
+        maze = new int[,] { {0,0},{0,0} };
+        rows = cols = 2;
+        visited = new bool[2,2];
+        bestPath.Clear();
+        minLen = int.MaxValue;
+        Search(0,0,0);
+        Console.WriteLine(bestPath.Count < int.MaxValue ? $"Путь для 2x2 длиной {bestPath.Count}:" : "Нет пути для 2x2");
+        if (bestPath.Count < int.MaxValue)
+            foreach (var c in bestPath) Console.Write($"({c.Item1},{c.Item2}) ");
+    }
+
+    static void Search(int x, int y, int len)
+    {
+        if (x<0 || y<0 || x>=rows || y>=cols || maze[x,y]==1 || visited[x,y]) return;
+        path.Add((x,y));
+        visited[x,y] = true;
+
+        if (x==rows-1 && y==cols-1)
+        {
+            if (len+1 < minLen)
+            {
+                minLen = len+1;
+                bestPath = new List<(int,int)>(path);
+            }
+        }
+        else
+        {
+            int[] dx = {-1,1,0,0};
+            int[] dy = {0,0,-1,1};
+            for (int d=0; d<4; d++)
+                Search(x+dx[d], y+dy[d], len+1);
+        }
+
+        visited[x,y] = false;
+        path.RemoveAt(path.Count-1);
+    }
+}
