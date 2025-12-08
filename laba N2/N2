@@ -1,0 +1,53 @@
+# Матрица смежности
+adj_matrix = [
+    [0, 1, 0, 0, 1, 0],
+    [1, 0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 1],
+    [1, 0, 0, 0, 0, 1],
+    [0, 0, 0, 1, 1, 0]
+]
+
+def find_components():
+    """Поиск связных компонент графа."""
+    n = len(adj_matrix)
+    visited = [False] * n
+
+    def dfs(vertex):
+        stack = [vertex]
+        component = []
+        while stack:
+            v = stack.pop()
+            if not visited[v]:
+                visited[v] = True
+                component.append(v)
+                for u, is_connected in enumerate(adj_matrix[v]):
+                    if is_connected and not visited[u]:
+                        stack.append(u)
+        return component
+
+    components = []
+    for i in range(n):
+        if not visited[i]:
+            comp = dfs(i)
+            components.append(comp)
+
+    # Вывод компонентов
+    for idx, comp in enumerate(components, 1):
+        print(f"Component {idx}: {comp}")
+
+def analyze_degrees():
+    """Анализ степеней вершин."""
+    n = len(adj_matrix)
+    for i in range(n):
+        degree = sum(adj_matrix[i])  # сумма по строке — степень вершины
+        print(f"Vertex {i}: degree = {degree}")
+
+def main():
+    print("Нахождение компонент связности:")
+    find_components()
+    print("\nАнализ степеней вершин:")
+    analyze_degrees()
+
+if name == "main":
+    main()
